@@ -31,7 +31,9 @@ python -m pip install numpy pandas scipy scikit-learn joblib
 
 The script uses its in-script ROCKET implementation if `aeon` or `sktime` is not installed.
 
-Obtain WESAD from the [Kaggle dataset page](https://www.kaggle.com/datasets/orvile/wesad-wearable-stress-affect-detection-dataset) or the original dataset source. The data files are not included in this repository. The directory passed to `--root` should contain subject folders in this form:
+The data files are not included in this repository. If `--root` does not contain at least three usable subjects, the runner tries to download WESAD anonymously from the [Kaggle dataset page](https://www.kaggle.com/datasets/orvile/wesad-wearable-stress-affect-detection-dataset). If that endpoint is unavailable, the Kaggle CLI and configured credentials are an optional fallback; install it with `python -m pip install kaggle` and complete Kaggle's authentication setup first. The download and extracted files require substantial disk space.
+
+The directory passed to `--root` should contain subject folders in this form:
 
 ```text
 WESAD/
@@ -47,7 +49,7 @@ WESAD/
             EDA.csv
 ```
 
-The E4 files may also be inside a subject's `S*_E4_Data.zip` archive. The runner requires `HR.csv`; `EDA.csv` is optional and is used to align the heart-rate signal when available.
+The E4 files may also be inside a subject's `S*_E4_Data.zip` archive. The runner requires `HR.csv`; `EDA.csv` is optional and is used to align the heart-rate signal when available. If the dataset is already present, no download is attempted.
 
 ## Run
 

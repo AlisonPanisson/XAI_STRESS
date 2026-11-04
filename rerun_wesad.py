@@ -17,6 +17,8 @@ Addresses IEEE Access Reviewer 2, comments 2, 3 and 5:
   * VAR as a separate forecasting analysis against a persistence baseline.
 
 Dependencies: numpy, pandas, scipy, scikit-learn, joblib.
+If WESAD is missing, the script downloads it anonymously from Kaggle when possible;
+the Kaggle CLI and configured credentials are an optional fallback.
 Optional: aeon or sktime (library ROCKET). Without them a compact in-script ROCKET is used.
 
 Usage
@@ -31,9 +33,11 @@ NOTE: the original notebooks could not be read when this script was written, so 
 preprocessing follows the README/dissertation description (EDA, TEMP, HR; min/mean/max),
 not the notebook code line by line.
 """
-import argparse, json, math, os, sys, tempfile, time, warnings, zipfile
+import argparse, json, math, os, shutil, subprocess, sys, tempfile, time, warnings, zipfile
 os.environ.setdefault("PYTHONWARNINGS", "ignore")  # inherited by joblib workers
 from pathlib import Path
+from urllib.error import URLError
+from urllib.request import Request, urlopen
 
 import numpy as np
 import pandas as pd
@@ -52,6 +56,7 @@ from sklearn.tree import DecisionTreeClassifier
 warnings.filterwarnings("ignore")
 
 SUBJECTS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17]
+KAGGLE_DATASET = "orvile/wesad-wearable-stress-affect-detection-dataset"
 FS = 4  # common grid (Hz): EDA and TEMP native rate of the Empatica E4
 CHANNELS = ["temp", "eda", "hr"]
 STAT_NAMES = [f"{c}_{s}" for c in CHANNELS for s in ("min", "mean", "max")]
@@ -61,6 +66,108 @@ TS = ["TSF", "ROCKET"]
 
 
 # ----------------------------------------------------------------------------- loading
+def _subject_data_exists(root: Path, sid: int):
+    sdir = root / f"S{sid}"
+    return ((sdir / f"S{sid}.pkl").is_file()
+            and ((sdir / f"S{sid}_E4_Data" / "HR.csv").is_file()
+                 or (sdir / f"S{sid}_E4_Data.zip").is_file()))
+
+
+def _download_kaggle_archive(download_dir: Path):
+    kaggle = shutil.which("kaggle")
+    if kaggle is not None:
+        try:
+            subprocess.run(
+                [kaggle, "datasets", "download", "-d", KAGGLE_DATASET, "-p", str(download_dir)],
+                check=True,
+            )
+            archives = list(download_dir.glob("*.zip"))
+            if len(archives) == 1:
+                return archives[0]
+            raise RuntimeError(
+                f"Expected one Kaggle dataset archive in {download_dir}, found {len(archives)}."
+            )
+        except subprocess.CalledProcessError as exc:
+            print(
+                f"[warn] Kaggle CLI download failed (exit {exc.returncode}); "
+                "trying the public download endpoint.",
+                file=sys.stderr,
+            )
+
+    archive_path = download_dir / "wesad-dataset.zip"
+    request = Request(
+        f"https://www.kaggle.com/api/v1/datasets/download/{KAGGLE_DATASET}",
+        headers={"User-Agent": "Mozilla/5.0"},
+    )
+    try:
+        with urlopen(request, timeout=60) as response, archive_path.open("wb") as archive:
+            shutil.copyfileobj(response, archive)
+    except (OSError, URLError) as exc:
+        raise RuntimeError(
+            "Could not download the WESAD dataset from Kaggle. Check network access; "
+            "if anonymous download is unavailable, install the Kaggle CLI and configure "
+            "Kaggle credentials."
+        ) from exc
+    return archive_path
+
+
+def ensure_wesad_dataset(root: Path, subjects):
+    """Download WESAD from Kaggle if fewer than three usable subjects are present."""
+    root = root.expanduser().resolve()
+    if sum(_subject_data_exists(root, sid) for sid in subjects) >= 3:
+        return
+
+    root.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="wesad-kaggle-", dir=root.parent) as tmp:
+        tmp_path = Path(tmp)
+        download_dir = tmp_path / "download"
+        download_dir.mkdir()
+        archive_path = _download_kaggle_archive(download_dir)
+
+        extracted = tmp_path / "extracted"
+        extracted.mkdir()
+        with zipfile.ZipFile(archive_path) as archive:
+            extraction_root = extracted.resolve()
+            for member in archive.infolist():
+                destination = (extracted / member.filename).resolve()
+                if os.path.commonpath((str(extraction_root), str(destination))) != str(extraction_root):
+                    raise RuntimeError(f"Unsafe path in Kaggle archive: {member.filename}")
+                archive.extract(member, extracted)
+
+        candidates = {
+            path.parent.parent
+            for sid in subjects
+            for path in extracted.rglob(f"S{sid}.pkl")
+            if path.parent.name == f"S{sid}"
+        }
+        source = max(
+            candidates,
+            key=lambda candidate: sum(_subject_data_exists(candidate, sid) for sid in subjects),
+            default=None,
+        )
+        available = (
+            sum(_subject_data_exists(source, sid) for sid in subjects)
+            if source is not None else 0
+        )
+        if source is None or available < 3:
+            raise RuntimeError(
+                f"The Kaggle archive did not contain at least three usable WESAD subjects "
+                f"for the expected layout (found {available})."
+            )
+
+        existing = [root / item.name for item in source.iterdir() if (root / item.name).exists()]
+        if existing:
+            raise FileExistsError(
+                f"Cannot install downloaded WESAD data because these paths already exist: "
+                f"{', '.join(map(str, existing))}"
+            )
+        root.mkdir(parents=True, exist_ok=True)
+        for item in source.iterdir():
+            shutil.move(str(item), str(root / item.name))
+
+    print(f"[info] downloaded WESAD from Kaggle to {root}")
+
+
 def _read_e4_csv(sdir: Path, sid: int, name: str):
     """Return (start_unix, fs, data) for a single-column Empatica E4 csv, or None."""
     folder = sdir / f"S{sid}_E4_Data"
@@ -646,11 +753,19 @@ def make_cfg(a):
 def run(args):
     t0 = time.time()
     root, out = Path(args.root), Path(args.out)
-    out.mkdir(parents=True, exist_ok=True)
     cfg = make_cfg(args)
     subjects = args.subjects or SUBJECTS
+    ensure_wesad_dataset(root, subjects)
+    out.mkdir(parents=True, exist_ok=True)
     D, summ = build_dataset(root, subjects, args.win, args.step)
     D = encode_task(D, args.task)
+    if args.extra_feats:  # control: give static models the std and slope that TSF can exploit
+        Xt = D["Xt"].astype(float)
+        tt = (np.arange(Xt.shape[2]) - (Xt.shape[2] - 1) / 2.0) / FS      # seconds, centered
+        std = Xt.std(axis=2)                                               # (n, 3)
+        slope = (Xt * tt).sum(axis=2) / (tt ** 2).sum()                    # units per second
+        D["Xs"] = np.hstack([D["Xs"], std, slope])                         # 9 -> 15 features
+        print(f"[info] extra features enabled: {D['Xs'].shape[1]} static features per window")
     summ.to_csv(out / "windows_per_subject.csv", index=False)
     ids = sorted(np.unique(D["subj"]).tolist())
     print(f"[info] {len(ids)} subjects, {len(D['y'])} windows "
@@ -757,6 +872,8 @@ def parse():
     p.add_argument("--folds", type=int, default=5, help="blocked CV folds for subject-specific models")
     p.add_argument("--smote", type=int, default=0, help="1 = SMOTE inside training folds only")
     p.add_argument("--no-tune", action="store_true", help="skip hyper-parameter search")
+    p.add_argument("--extra-feats", action="store_true",
+                   help="control: add per-window std and slope (15 static features instead of 9)")
     p.add_argument("--no-ts", dest="ts", action="store_false", help="skip TSF/ROCKET")
     p.add_argument("--own-rocket", action="store_true", help="force the in-script ROCKET")
     p.add_argument("--skip-var", action="store_true")
