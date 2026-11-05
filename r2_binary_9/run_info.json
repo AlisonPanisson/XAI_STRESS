@@ -1,0 +1,42 @@
+{
+  "args": {
+    "root": "/tmp/WESAD",
+    "out": "r2_binary_9",
+    "win": 60.0,
+    "step": 30.0,
+    "task": "binary",
+    "folds": 5,
+    "smote": 0,
+    "no_tune": false,
+    "hr_source": "bvp",
+    "extra_feats": false,
+    "ts": true,
+    "own_rocket": false,
+    "skip_var": false,
+    "calib_model": "RF",
+    "calib_weight": 5.0,
+    "subjects": null,
+    "seed": 42,
+    "n_jobs": -1,
+    "quick": false,
+    "selftest": false
+  },
+  "subjects": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    13,
+    14,
+    15,
+    16,
+    17
+  ],
+  "seconds": 1299
+}

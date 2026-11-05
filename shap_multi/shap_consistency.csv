@@ -1,0 +1,9 @@
+metric,value,sd
+LOSO: mean pairwise Spearman between subjects,0.7930272108843537,0.11725250069585601
+LOSO: mean Spearman of subject vs group-mean importance,0.8845238095238094,0.07016339853749293
+LOSO: most frequent top-1 feature,eda_std,15/15 subjects
+SUBJECT: mean pairwise Spearman between subjects,0.5953401360544217,0.2519313752496129
+SUBJECT: mean Spearman of subject vs group-mean importance,0.7776190476190474,0.20146768729735123
+SUBJECT: most frequent top-1 feature,eda_mean,4/15 subjects
+same subject: Spearman LOSO vs subject-specific importance,0.39309523809523805,0.18076494051342162
+same subject: overlap of top-3 features (of 3),0.5333333333333333,0.8055363982396383

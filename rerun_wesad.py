@@ -17,8 +17,6 @@ Addresses IEEE Access Reviewer 2, comments 2, 3 and 5:
   * VAR as a separate forecasting analysis against a persistence baseline.
 
 Dependencies: numpy, pandas, scipy, scikit-learn, joblib.
-If WESAD is missing, the script downloads it anonymously from Kaggle when possible;
-the Kaggle CLI and configured credentials are an optional fallback.
 Optional: aeon or sktime (library ROCKET). Without them a compact in-script ROCKET is used.
 
 Usage
@@ -33,11 +31,9 @@ NOTE: the original notebooks could not be read when this script was written, so 
 preprocessing follows the README/dissertation description (EDA, TEMP, HR; min/mean/max),
 not the notebook code line by line.
 """
-import argparse, json, math, os, shutil, subprocess, sys, tempfile, time, warnings, zipfile
+import argparse, json, math, os, sys, tempfile, time, warnings, zipfile
 os.environ.setdefault("PYTHONWARNINGS", "ignore")  # inherited by joblib workers
 from pathlib import Path
-from urllib.error import URLError
-from urllib.request import Request, urlopen
 
 import numpy as np
 import pandas as pd
@@ -56,7 +52,6 @@ from sklearn.tree import DecisionTreeClassifier
 warnings.filterwarnings("ignore")
 
 SUBJECTS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17]
-KAGGLE_DATASET = "orvile/wesad-wearable-stress-affect-detection-dataset"
 FS = 4  # common grid (Hz): EDA and TEMP native rate of the Empatica E4
 CHANNELS = ["temp", "eda", "hr"]
 STAT_NAMES = [f"{c}_{s}" for c in CHANNELS for s in ("min", "mean", "max")]
@@ -66,108 +61,6 @@ TS = ["TSF", "ROCKET"]
 
 
 # ----------------------------------------------------------------------------- loading
-def _subject_data_exists(root: Path, sid: int):
-    sdir = root / f"S{sid}"
-    return ((sdir / f"S{sid}.pkl").is_file()
-            and ((sdir / f"S{sid}_E4_Data" / "HR.csv").is_file()
-                 or (sdir / f"S{sid}_E4_Data.zip").is_file()))
-
-
-def _download_kaggle_archive(download_dir: Path):
-    kaggle = shutil.which("kaggle")
-    if kaggle is not None:
-        try:
-            subprocess.run(
-                [kaggle, "datasets", "download", "-d", KAGGLE_DATASET, "-p", str(download_dir)],
-                check=True,
-            )
-            archives = list(download_dir.glob("*.zip"))
-            if len(archives) == 1:
-                return archives[0]
-            raise RuntimeError(
-                f"Expected one Kaggle dataset archive in {download_dir}, found {len(archives)}."
-            )
-        except subprocess.CalledProcessError as exc:
-            print(
-                f"[warn] Kaggle CLI download failed (exit {exc.returncode}); "
-                "trying the public download endpoint.",
-                file=sys.stderr,
-            )
-
-    archive_path = download_dir / "wesad-dataset.zip"
-    request = Request(
-        f"https://www.kaggle.com/api/v1/datasets/download/{KAGGLE_DATASET}",
-        headers={"User-Agent": "Mozilla/5.0"},
-    )
-    try:
-        with urlopen(request, timeout=60) as response, archive_path.open("wb") as archive:
-            shutil.copyfileobj(response, archive)
-    except (OSError, URLError) as exc:
-        raise RuntimeError(
-            "Could not download the WESAD dataset from Kaggle. Check network access; "
-            "if anonymous download is unavailable, install the Kaggle CLI and configure "
-            "Kaggle credentials."
-        ) from exc
-    return archive_path
-
-
-def ensure_wesad_dataset(root: Path, subjects):
-    """Download WESAD from Kaggle if fewer than three usable subjects are present."""
-    root = root.expanduser().resolve()
-    if sum(_subject_data_exists(root, sid) for sid in subjects) >= 3:
-        return
-
-    root.parent.mkdir(parents=True, exist_ok=True)
-    with tempfile.TemporaryDirectory(prefix="wesad-kaggle-", dir=root.parent) as tmp:
-        tmp_path = Path(tmp)
-        download_dir = tmp_path / "download"
-        download_dir.mkdir()
-        archive_path = _download_kaggle_archive(download_dir)
-
-        extracted = tmp_path / "extracted"
-        extracted.mkdir()
-        with zipfile.ZipFile(archive_path) as archive:
-            extraction_root = extracted.resolve()
-            for member in archive.infolist():
-                destination = (extracted / member.filename).resolve()
-                if os.path.commonpath((str(extraction_root), str(destination))) != str(extraction_root):
-                    raise RuntimeError(f"Unsafe path in Kaggle archive: {member.filename}")
-                archive.extract(member, extracted)
-
-        candidates = {
-            path.parent.parent
-            for sid in subjects
-            for path in extracted.rglob(f"S{sid}.pkl")
-            if path.parent.name == f"S{sid}"
-        }
-        source = max(
-            candidates,
-            key=lambda candidate: sum(_subject_data_exists(candidate, sid) for sid in subjects),
-            default=None,
-        )
-        available = (
-            sum(_subject_data_exists(source, sid) for sid in subjects)
-            if source is not None else 0
-        )
-        if source is None or available < 3:
-            raise RuntimeError(
-                f"The Kaggle archive did not contain at least three usable WESAD subjects "
-                f"for the expected layout (found {available})."
-            )
-
-        existing = [root / item.name for item in source.iterdir() if (root / item.name).exists()]
-        if existing:
-            raise FileExistsError(
-                f"Cannot install downloaded WESAD data because these paths already exist: "
-                f"{', '.join(map(str, existing))}"
-            )
-        root.mkdir(parents=True, exist_ok=True)
-        for item in source.iterdir():
-            shutil.move(str(item), str(root / item.name))
-
-    print(f"[info] downloaded WESAD from Kaggle to {root}")
-
-
 def _read_e4_csv(sdir: Path, sid: int, name: str):
     """Return (start_unix, fs, data) for a single-column Empatica E4 csv, or None."""
     folder = sdir / f"S{sid}_E4_Data"
@@ -186,7 +79,33 @@ def _read_e4_csv(sdir: Path, sid: int, name: str):
     return vals[0], vals[1], np.asarray(vals[2:], dtype=float)
 
 
-def load_subject(root: Path, sid: int):
+def hr_from_bvp(bvp, n_grid, fs_bvp=64.0):
+    """Heart rate (bpm) on the 4 Hz grid, derived from the wrist BVP stored in the .pkl.
+    Band-pass 0.7-3.5 Hz, peak detection, inter-beat intervals kept in 40-180 bpm,
+    median filter (5 beats), linear interpolation, ~8 s moving average."""
+    from scipy.signal import butter, filtfilt, find_peaks, medfilt
+    b, a = butter(3, [0.7, 3.5], btype="bandpass", fs=fs_bvp)
+    x = filtfilt(b, a, bvp - np.mean(bvp))
+    peaks, _ = find_peaks(x, distance=int(0.33 * fs_bvp), prominence=0.3 * np.std(x))
+    tp = peaks / fs_bvp
+    ibi = np.diff(tp)
+    ok = (ibi > 60 / 180.0) & (ibi < 60 / 40.0)
+    if ok.sum() < 10:
+        raise ValueError("too few valid beats in BVP")
+    hr_inst = medfilt(60.0 / ibi[ok], 5)
+    t_hr = tp[1:][ok]
+    t = np.arange(n_grid) / FS
+    hr = np.interp(t, t_hr, hr_inst)
+    k = int(8 * FS)
+    kern = np.ones(k) / k
+    pad = np.pad(hr, (k // 2, k - k // 2 - 1), mode="edge")
+    return np.convolve(pad, kern, mode="valid")
+
+
+def load_subject(root: Path, sid: int, hr_source: str = "bvp"):
+    """hr_source: 'bvp' (recommended: HR derived from the .pkl BVP, same time base as the labels)
+    or 'csv' (HR.csv of the raw E4 export; assumes its time origin equals the EDA.csv origin
+    and is NOT guaranteed to be aligned with the labels)."""
     import pickle
     sdir = root / f"S{sid}"
     with open(sdir / f"S{sid}.pkl", "rb") as f:
@@ -197,23 +116,26 @@ def load_subject(root: Path, sid: int):
     n = min(len(eda), len(temp))
     eda, temp = eda[:n], temp[:n]
     lab = np.asarray(d["label"]).ravel().astype(int)
-
-    hr_csv = _read_e4_csv(sdir, sid, "HR.csv")
-    if hr_csv is None:
-        raise FileNotFoundError(f"HR.csv not found for S{sid}")
-    hr_start, hr_fs, hr = hr_csv
-    eda_csv = _read_e4_csv(sdir, sid, "EDA.csv")
-    if eda_csv is not None:
-        offset = hr_start - eda_csv[0]
-    else:
-        offset = 10.0  # E4 heart rate starts ~10 s after the other channels
-        print(f"[warn] S{sid}: EDA.csv missing, assuming HR offset of 10 s", file=sys.stderr)
-
     t = np.arange(n) / FS
-    hr_t = offset + np.arange(len(hr)) / hr_fs
-    hr_i = np.interp(t, hr_t, hr)
-    first_valid = int(np.ceil(max(offset, 0.0) * FS))
-    last_valid = int(np.floor(min(hr_t[-1], t[-1]) * FS))
+
+    if hr_source == "bvp":
+        hr_i = hr_from_bvp(np.asarray(wrist["BVP"]).ravel().astype(float), n)
+        first_valid, last_valid = int(5 * FS), n - 1 - int(5 * FS)
+    else:
+        hr_csv = _read_e4_csv(sdir, sid, "HR.csv")
+        if hr_csv is None:
+            raise FileNotFoundError(f"HR.csv not found for S{sid}")
+        hr_start, hr_fs, hr = hr_csv
+        eda_csv = _read_e4_csv(sdir, sid, "EDA.csv")
+        if eda_csv is not None:
+            offset = hr_start - eda_csv[0]
+        else:
+            offset = 10.0
+            print(f"[warn] S{sid}: EDA.csv missing, assuming HR offset of 10 s", file=sys.stderr)
+        hr_t = offset + np.arange(len(hr)) / hr_fs
+        hr_i = np.interp(t, hr_t, hr)
+        first_valid = int(np.ceil(max(offset, 0.0) * FS))
+        last_valid = int(np.floor(min(hr_t[-1], t[-1]) * FS))
     # labels are stored at the RespiBAN rate (700 Hz); align proportionally in time
     li = np.minimum((np.arange(n) * (len(lab) / n)).astype(int), len(lab) - 1)
     return dict(sig=np.vstack([temp, eda, hr_i]), label=lab[li],
@@ -249,11 +171,11 @@ def build_windows(sd, win_s, step_s):
             np.asarray(pos), seg_minutes)
 
 
-def build_dataset(root, subjects, win_s, step_s):
+def build_dataset(root, subjects, win_s, step_s, hr_source="bvp"):
     parts, summ = [], []
     for sid in subjects:
         try:
-            sd = load_subject(root, sid)
+            sd = load_subject(root, sid, hr_source)
         except Exception as e:  # missing subject -> skip
             print(f"[warn] skipping S{sid}: {e}", file=sys.stderr)
             continue
@@ -617,7 +539,7 @@ def calib_one(sid, D, cfg):
 # ----------------------------------------------------------------------------- VAR (separate)
 def var_one(sid, root, cfg, maxlag=10):
     """VAR on first differences of z-scored 1 Hz signals; 1-step-ahead RMSE vs persistence."""
-    sd = load_subject(root, sid)
+    sd = load_subject(root, sid, cfg.hr_source)
     S = sd["sig"][:, sd["first_valid"]:sd["last_valid"] + 1]
     T = (S.shape[1] // FS) * FS
     Y = S[:, :T].reshape(3, -1, FS).mean(2).T            # (time, 3) at 1 Hz
@@ -753,11 +675,10 @@ def make_cfg(a):
 def run(args):
     t0 = time.time()
     root, out = Path(args.root), Path(args.out)
+    out.mkdir(parents=True, exist_ok=True)
     cfg = make_cfg(args)
     subjects = args.subjects or SUBJECTS
-    ensure_wesad_dataset(root, subjects)
-    out.mkdir(parents=True, exist_ok=True)
-    D, summ = build_dataset(root, subjects, args.win, args.step)
+    D, summ = build_dataset(root, subjects, args.win, args.step, args.hr_source)
     D = encode_task(D, args.task)
     if args.extra_feats:  # control: give static models the std and slope that TSF can exploit
         Xt = D["Xt"].astype(float)
@@ -844,10 +765,13 @@ def make_synthetic(root: Path, n_subjects=6, seed=0):
         temp = 33 + off[1] - 0.4 * (lab_4 == 2) + 0.1 * np.cumsum(rng.normal(0, .005, n))
         hr = 70 + 4 * off[2] + 8 * (lab_4[::FS] == 2) + 3 * (lab_4[::FS] == 3)
         eda += rng.normal(0, .15, n); temp += rng.normal(0, .05, n); hr = hr + rng.normal(0, 2, len(hr))
+        hr_s = np.repeat(hr, 64)[: n * 16]
+        phase = np.cumsum(2 * np.pi * hr_s / 60.0 / 64.0)
+        bvp = np.sin(phase) + 0.1 * rng.normal(size=len(phase))
         sdir = root / f"S{sid}"
         sdir.mkdir(parents=True)
         pickle.dump({"signal": {"wrist": {"EDA": eda[:, None], "TEMP": temp[:, None],
-                                          "BVP": rng.normal(size=(n * 16, 1)), "ACC": np.zeros((n * 8, 3))}},
+                                          "BVP": bvp[:, None], "ACC": np.zeros((n * 8, 3))}},
                      "label": lab700, "subject": f"S{sid}"}, open(sdir / f"S{sid}.pkl", "wb"))
         hr_txt = "1000010.0\n1.000000\n" + "\n".join(f"{v:.2f}" for v in hr[10:])
         eda_txt = "1000000.0\n4.000000\n" + "\n".join(f"{v:.5f}" for v in eda)
@@ -872,6 +796,8 @@ def parse():
     p.add_argument("--folds", type=int, default=5, help="blocked CV folds for subject-specific models")
     p.add_argument("--smote", type=int, default=0, help="1 = SMOTE inside training folds only")
     p.add_argument("--no-tune", action="store_true", help="skip hyper-parameter search")
+    p.add_argument("--hr-source", choices=["bvp", "csv"], default="bvp",
+                   help="heart rate from the .pkl BVP (default, aligned with labels) or from HR.csv (legacy)")
     p.add_argument("--extra-feats", action="store_true",
                    help="control: add per-window std and slope (15 static features instead of 9)")
     p.add_argument("--no-ts", dest="ts", action="store_false", help="skip TSF/ROCKET")

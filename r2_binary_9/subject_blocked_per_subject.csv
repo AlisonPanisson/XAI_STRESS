@@ -1,0 +1,106 @@
+protocol,subject,model,params,n_train,n_test,acc,bal_acc,macro_f1
+SUBJECT_BLOCKED,2,kNN,"[{""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 3}]",56,90,0.9555555555555556,0.9332839140103781,0.9332839140103781
+SUBJECT_BLOCKED,2,LR,"[{""C"": 0.1}, {""C"": 0.1}, {""C"": 1}, {""C"": 1}, {""C"": 1}]",56,90,0.9777777777777777,0.9859154929577465,0.9678571428571429
+SUBJECT_BLOCKED,2,RF,"[{""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}]",56,90,0.9333333333333333,0.9577464788732395,0.9097593582887701
+SUBJECT_BLOCKED,2,SVM,"[{""C"": 1, ""gamma"": 0.1}, {""C"": 1, ""gamma"": 0.1}, {""C"": 1, ""gamma"": 0.1}, {""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": ""scale""}]",56,90,0.9666666666666667,0.9788732394366197,0.9526232672398667
+SUBJECT_BLOCKED,2,NN,"[{""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [64, 32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [64, 32]}]",56,90,0.9777777777777777,0.9859154929577465,0.9678571428571429
+SUBJECT_BLOCKED,2,TSF,[],56,90,0.9111111111111111,0.905114899925871,0.8757763975155279
+SUBJECT_BLOCKED,2,ROCKET,[],56,90,0.9777777777777777,0.9859154929577465,0.9678571428571429
+SUBJECT_BLOCKED,3,kNN,"[{""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 3}]",56,91,0.8241758241758241,0.7077464788732395,0.7229832572298326
+SUBJECT_BLOCKED,3,LR,"[{""C"": 0.1}, {""C"": 10}, {""C"": 0.1}, {""C"": 1}, {""C"": 1}]",56,91,0.7692307692307693,0.7084507042253521,0.6900243309002433
+SUBJECT_BLOCKED,3,RF,"[{""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 3}]",56,91,0.9010989010989011,0.846830985915493,0.8531468531468531
+SUBJECT_BLOCKED,3,SVM,"[{""C"": 10, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": ""scale""}, {""C"": 10, ""gamma"": 0.1}, {""C"": 10, ""gamma"": 0.1}, {""C"": 1, ""gamma"": 0.1}]",56,91,0.8241758241758241,0.7257042253521127,0.7339181286549707
+SUBJECT_BLOCKED,3,NN,"[{""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [64, 32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [64, 32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [64, 32]}, {""alpha"": 0.01, ""hidden_layer_sizes"": [64, 32]}]",56,91,0.8351648351648352,0.7866197183098591,0.7716245608164631
+SUBJECT_BLOCKED,3,TSF,[],56,91,0.7802197802197802,0.6616197183098591,0.6673976608187134
+SUBJECT_BLOCKED,3,ROCKET,[],56,91,0.8021978021978022,0.7116197183098592,0.7116197183098592
+SUBJECT_BLOCKED,4,kNN,"[{""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 5}, {""n_neighbors"": 5}, {""n_neighbors"": 3}]",57,92,1.0,1.0,1.0
+SUBJECT_BLOCKED,4,LR,"[{""C"": 0.1}, {""C"": 0.1}, {""C"": 10}, {""C"": 10}, {""C"": 0.1}]",57,92,1.0,1.0,1.0
+SUBJECT_BLOCKED,4,RF,"[{""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}]",57,92,1.0,1.0,1.0
+SUBJECT_BLOCKED,4,SVM,"[{""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": 0.1}, {""C"": 1, ""gamma"": 0.1}, {""C"": 1, ""gamma"": ""scale""}]",57,92,1.0,1.0,1.0
+SUBJECT_BLOCKED,4,NN,"[{""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}]",57,92,1.0,1.0,1.0
+SUBJECT_BLOCKED,4,TSF,[],57,92,1.0,1.0,1.0
+SUBJECT_BLOCKED,4,ROCKET,[],57,92,1.0,1.0,1.0
+SUBJECT_BLOCKED,5,kNN,"[{""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 5}, {""n_neighbors"": 5}, {""n_neighbors"": 3}]",58,93,1.0,1.0,1.0
+SUBJECT_BLOCKED,5,LR,"[{""C"": 0.1}, {""C"": 0.1}, {""C"": 10}, {""C"": 10}, {""C"": 0.1}]",58,93,1.0,1.0,1.0
+SUBJECT_BLOCKED,5,RF,"[{""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}]",58,93,1.0,1.0,1.0
+SUBJECT_BLOCKED,5,SVM,"[{""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": ""scale""}]",58,93,1.0,1.0,1.0
+SUBJECT_BLOCKED,5,NN,"[{""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [64, 32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [64, 32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [64, 32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [64, 32]}]",58,93,0.989247311827957,0.975,0.9837781266352694
+SUBJECT_BLOCKED,5,TSF,[],58,93,1.0,1.0,1.0
+SUBJECT_BLOCKED,5,ROCKET,[],58,93,0.989247311827957,0.9931506849315068,0.9843566021867115
+SUBJECT_BLOCKED,6,kNN,"[{""n_neighbors"": 3}, {""n_neighbors"": 5}, {""n_neighbors"": 3}, {""n_neighbors"": 5}, {""n_neighbors"": 5}]",58,93,0.989247311827957,0.9931506849315068,0.9843566021867115
+SUBJECT_BLOCKED,6,LR,"[{""C"": 1}, {""C"": 0.1}, {""C"": 0.1}, {""C"": 0.1}, {""C"": 0.1}]",58,93,0.967741935483871,0.9794520547945205,0.954626768580257
+SUBJECT_BLOCKED,6,RF,"[{""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}]",58,93,0.989247311827957,0.9931506849315068,0.9843566021867115
+SUBJECT_BLOCKED,6,SVM,"[{""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": 0.1}, {""C"": 10, ""gamma"": 0.1}, {""C"": 1, ""gamma"": ""scale""}, {""C"": 10, ""gamma"": 0.1}]",58,93,0.978494623655914,0.9863013698630136,0.9692460317460317
+SUBJECT_BLOCKED,6,NN,"[{""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}]",58,93,0.989247311827957,0.9931506849315068,0.9843566021867115
+SUBJECT_BLOCKED,6,TSF,[],58,93,0.989247311827957,0.9931506849315068,0.9843566021867115
+SUBJECT_BLOCKED,6,ROCKET,[],58,93,0.989247311827957,0.9931506849315068,0.9843566021867115
+SUBJECT_BLOCKED,7,kNN,"[{""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 5}]",58,93,0.989247311827957,0.9931506849315068,0.9843566021867115
+SUBJECT_BLOCKED,7,LR,"[{""C"": 0.1}, {""C"": 0.1}, {""C"": 1}, {""C"": 1}, {""C"": 0.1}]",58,93,0.989247311827957,0.9931506849315068,0.9843566021867115
+SUBJECT_BLOCKED,7,RF,"[{""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}]",58,93,0.989247311827957,0.9931506849315068,0.9843566021867115
+SUBJECT_BLOCKED,7,SVM,"[{""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": 0.1}]",58,93,0.989247311827957,0.9931506849315068,0.9843566021867115
+SUBJECT_BLOCKED,7,NN,"[{""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}]",58,93,0.989247311827957,0.9931506849315068,0.9843566021867115
+SUBJECT_BLOCKED,7,TSF,[],58,93,0.989247311827957,0.9931506849315068,0.9843566021867115
+SUBJECT_BLOCKED,7,ROCKET,[],58,93,0.978494623655914,0.9863013698630136,0.9692460317460317
+SUBJECT_BLOCKED,8,kNN,"[{""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 5}]",58,93,1.0,1.0,1.0
+SUBJECT_BLOCKED,8,LR,"[{""C"": 0.1}, {""C"": 10}, {""C"": 0.1}, {""C"": 0.1}, {""C"": 0.1}]",58,93,1.0,1.0,1.0
+SUBJECT_BLOCKED,8,RF,"[{""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}]",58,93,0.989247311827957,0.9930555555555556,0.9848755895267522
+SUBJECT_BLOCKED,8,SVM,"[{""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": ""scale""}, {""C"": 10, ""gamma"": 0.1}]",58,93,1.0,1.0,1.0
+SUBJECT_BLOCKED,8,NN,"[{""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}]",58,93,1.0,1.0,1.0
+SUBJECT_BLOCKED,8,TSF,[],58,93,0.989247311827957,0.9930555555555556,0.9848755895267522
+SUBJECT_BLOCKED,8,ROCKET,[],58,93,0.989247311827957,0.9761904761904762,0.9843566021867115
+SUBJECT_BLOCKED,9,kNN,"[{""n_neighbors"": 5}, {""n_neighbors"": 3}, {""n_neighbors"": 5}, {""n_neighbors"": 5}, {""n_neighbors"": 3}]",58,93,1.0,1.0,1.0
+SUBJECT_BLOCKED,9,LR,"[{""C"": 10}, {""C"": 0.1}, {""C"": 1}, {""C"": 10}, {""C"": 0.1}]",58,93,1.0,1.0,1.0
+SUBJECT_BLOCKED,9,RF,"[{""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}]",58,93,1.0,1.0,1.0
+SUBJECT_BLOCKED,9,SVM,"[{""C"": 1, ""gamma"": 0.1}, {""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": 0.1}]",58,93,1.0,1.0,1.0
+SUBJECT_BLOCKED,9,NN,"[{""alpha"": 0.0001, ""hidden_layer_sizes"": [64, 32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [64, 32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [64, 32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}]",58,93,1.0,1.0,1.0
+SUBJECT_BLOCKED,9,TSF,[],58,93,1.0,1.0,1.0
+SUBJECT_BLOCKED,9,ROCKET,[],58,93,1.0,1.0,1.0
+SUBJECT_BLOCKED,10,kNN,"[{""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 11}, {""n_neighbors"": 5}, {""n_neighbors"": 3}]",60,96,1.0,1.0,1.0
+SUBJECT_BLOCKED,10,LR,"[{""C"": 0.1}, {""C"": 0.1}, {""C"": 0.1}, {""C"": 0.1}, {""C"": 0.1}]",60,96,1.0,1.0,1.0
+SUBJECT_BLOCKED,10,RF,"[{""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}]",60,96,1.0,1.0,1.0
+SUBJECT_BLOCKED,10,SVM,"[{""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": ""scale""}, {""C"": 10, ""gamma"": 0.1}, {""C"": 1, ""gamma"": ""scale""}]",60,96,1.0,1.0,1.0
+SUBJECT_BLOCKED,10,NN,"[{""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}]",60,96,1.0,1.0,1.0
+SUBJECT_BLOCKED,10,TSF,[],60,96,1.0,1.0,1.0
+SUBJECT_BLOCKED,10,ROCKET,[],60,96,1.0,1.0,1.0
+SUBJECT_BLOCKED,11,kNN,"[{""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 5}]",59,94,0.9361702127659575,0.9080234833659491,0.9080234833659491
+SUBJECT_BLOCKED,11,LR,"[{""C"": 10}, {""C"": 10}, {""C"": 0.1}, {""C"": 10}, {""C"": 10}]",59,94,0.8085106382978723,0.741030658838878,0.7329545454545454
+SUBJECT_BLOCKED,11,RF,"[{""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 3}, {""max_depth"": null, ""min_samples_leaf"": 1}]",59,94,0.9680851063829787,0.9455316373124592,0.9532105525136885
+SUBJECT_BLOCKED,11,SVM,"[{""C"": 10, ""gamma"": ""scale""}, {""C"": 10, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": ""scale""}]",59,94,0.9787234042553191,0.9523809523809523,0.9682432432432433
+SUBJECT_BLOCKED,11,NN,"[{""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.01, ""hidden_layer_sizes"": [64, 32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.01, ""hidden_layer_sizes"": [64, 32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [64, 32]}]",59,94,0.8297872340425532,0.7547292889758643,0.7547292889758643
+SUBJECT_BLOCKED,11,TSF,[],59,94,0.9787234042553191,0.9523809523809523,0.9682432432432433
+SUBJECT_BLOCKED,11,ROCKET,[],59,94,0.851063829787234,0.802348336594912,0.7922979797979798
+SUBJECT_BLOCKED,13,kNN,"[{""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 5}]",59,94,0.9893617021276596,0.9761904761904762,0.9844035175045628
+SUBJECT_BLOCKED,13,LR,"[{""C"": 0.1}, {""C"": 0.1}, {""C"": 0.1}, {""C"": 0.1}, {""C"": 0.1}]",59,94,1.0,1.0,1.0
+SUBJECT_BLOCKED,13,RF,"[{""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}]",59,94,1.0,1.0,1.0
+SUBJECT_BLOCKED,13,SVM,"[{""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": 0.1}, {""C"": 10, ""gamma"": 0.1}, {""C"": 1, ""gamma"": 0.1}, {""C"": 1, ""gamma"": 0.1}]",59,94,0.9893617021276596,0.9761904761904762,0.9844035175045628
+SUBJECT_BLOCKED,13,NN,"[{""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [64, 32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [64, 32]}]",59,94,0.9787234042553191,0.9523809523809523,0.9682432432432433
+SUBJECT_BLOCKED,13,TSF,[],59,94,1.0,1.0,1.0
+SUBJECT_BLOCKED,13,ROCKET,[],59,94,0.9893617021276596,0.9761904761904762,0.9844035175045628
+SUBJECT_BLOCKED,14,kNN,"[{""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 3}]",59,94,1.0,1.0,1.0
+SUBJECT_BLOCKED,14,LR,"[{""C"": 0.1}, {""C"": 0.1}, {""C"": 0.1}, {""C"": 0.1}, {""C"": 0.1}]",59,94,1.0,1.0,1.0
+SUBJECT_BLOCKED,14,RF,"[{""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}]",59,94,1.0,1.0,1.0
+SUBJECT_BLOCKED,14,SVM,"[{""C"": 1, ""gamma"": 0.1}, {""C"": 1, ""gamma"": 0.1}, {""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": 0.1}, {""C"": 1, ""gamma"": 0.1}]",59,94,0.9787234042553191,0.9523809523809523,0.9682432432432433
+SUBJECT_BLOCKED,14,NN,"[{""alpha"": 0.0001, ""hidden_layer_sizes"": [64, 32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [64, 32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [64, 32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [64, 32]}]",59,94,0.9893617021276596,0.9761904761904762,0.9844035175045628
+SUBJECT_BLOCKED,14,TSF,[],59,94,0.9893617021276596,0.9761904761904762,0.9844035175045628
+SUBJECT_BLOCKED,14,ROCKET,[],59,94,1.0,1.0,1.0
+SUBJECT_BLOCKED,15,kNN,"[{""n_neighbors"": 3}, {""n_neighbors"": 5}, {""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 3}]",59,94,1.0,1.0,1.0
+SUBJECT_BLOCKED,15,LR,"[{""C"": 0.1}, {""C"": 0.1}, {""C"": 1}, {""C"": 1}, {""C"": 0.1}]",59,94,1.0,1.0,1.0
+SUBJECT_BLOCKED,15,RF,"[{""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}]",59,94,0.9893617021276596,0.9761904761904762,0.9844035175045628
+SUBJECT_BLOCKED,15,SVM,"[{""C"": 1, ""gamma"": 0.1}, {""C"": 1, ""gamma"": 0.1}, {""C"": 1, ""gamma"": 0.1}, {""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": ""scale""}]",59,94,1.0,1.0,1.0
+SUBJECT_BLOCKED,15,NN,"[{""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [64, 32]}]",59,94,0.9893617021276596,0.9761904761904762,0.9844035175045628
+SUBJECT_BLOCKED,15,TSF,[],59,94,1.0,1.0,1.0
+SUBJECT_BLOCKED,15,ROCKET,[],59,94,0.9574468085106383,0.9386823222439661,0.9386823222439661
+SUBJECT_BLOCKED,16,kNN,"[{""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 3}]",59,94,1.0,1.0,1.0
+SUBJECT_BLOCKED,16,LR,"[{""C"": 0.1}, {""C"": 0.1}, {""C"": 0.1}, {""C"": 0.1}, {""C"": 0.1}]",59,94,1.0,1.0,1.0
+SUBJECT_BLOCKED,16,RF,"[{""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}]",59,94,0.8936170212765957,0.8636660143509458,0.8516414141414141
+SUBJECT_BLOCKED,16,SVM,"[{""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": 0.1}, {""C"": 1, ""gamma"": ""scale""}]",59,94,1.0,1.0,1.0
+SUBJECT_BLOCKED,16,NN,"[{""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}]",59,94,0.9893617021276596,0.9761904761904762,0.9844035175045628
+SUBJECT_BLOCKED,16,TSF,[],59,94,0.9893617021276596,0.9761904761904762,0.9844035175045628
+SUBJECT_BLOCKED,16,ROCKET,[],59,94,0.9893617021276596,0.9761904761904762,0.9844035175045628
+SUBJECT_BLOCKED,17,kNN,"[{""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 3}, {""n_neighbors"": 3}]",59,94,1.0,1.0,1.0
+SUBJECT_BLOCKED,17,LR,"[{""C"": 1}, {""C"": 1}, {""C"": 1}, {""C"": 10}, {""C"": 10}]",59,94,1.0,1.0,1.0
+SUBJECT_BLOCKED,17,RF,"[{""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}, {""max_depth"": null, ""min_samples_leaf"": 1}]",59,94,1.0,1.0,1.0
+SUBJECT_BLOCKED,17,SVM,"[{""C"": 10, ""gamma"": 0.1}, {""C"": 1, ""gamma"": 0.1}, {""C"": 1, ""gamma"": 0.1}, {""C"": 1, ""gamma"": ""scale""}, {""C"": 1, ""gamma"": ""scale""}]",59,94,1.0,1.0,1.0
+SUBJECT_BLOCKED,17,NN,"[{""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [64, 32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [64, 32]}, {""alpha"": 0.0001, ""hidden_layer_sizes"": [32]}]",59,94,1.0,1.0,1.0
+SUBJECT_BLOCKED,17,TSF,[],59,94,1.0,1.0,1.0
+SUBJECT_BLOCKED,17,ROCKET,[],59,94,1.0,1.0,1.0
